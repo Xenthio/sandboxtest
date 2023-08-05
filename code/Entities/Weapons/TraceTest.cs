@@ -20,4 +20,16 @@ public class TraceTest : Weapon
 
 		DebugOverlay.Line( tr.StartPosition, tr.EndPosition, Color.Red, 5, false );
 	}
+
+	public override void SecondaryAttack()
+	{
+		var pl = Owner as Player;
+		var tr = GatewayTrace.Box( pl.Hull, pl.Position, pl.Position ).Ignore(pl).Run();
+
+		foreach ( var traceresult in tr.Results )
+		{
+			DebugOverlay.Line( traceresult.StartPosition, traceresult.EndPosition, 5, false );
+		}
+		base.SecondaryAttack();
+	}
 }

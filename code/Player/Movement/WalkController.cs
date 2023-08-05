@@ -264,7 +264,7 @@ public partial class WalkController : MovementComponent
 		{
 			Entity.Velocity = Entity.Velocity.WithZ( 0 );
 		}
-		DoPushingStuff();
+		//DoPushingStuff();
 		if ( Entity == null ) return;
 
 		// CheckFalling(); // fall damage etc
@@ -367,7 +367,7 @@ public partial class WalkController : MovementComponent
 
 	public virtual void StepMove()
 	{
-		MoveHelper mover = new MoveHelper( Entity.Position, Entity.Velocity );
+		MoveHelperGate mover = new MoveHelperGate( Entity.Position, Entity.Velocity );
 		mover.Trace = mover.Trace.Size( mins, maxs ).Ignore( Entity );
 		mover.MaxStandableAngle = GroundAngle;
 
@@ -379,7 +379,7 @@ public partial class WalkController : MovementComponent
 
 	public virtual void Move()
 	{
-		MoveHelper mover = new MoveHelper( Entity.Position, Entity.Velocity );
+		MoveHelperGate mover = new MoveHelperGate( Entity.Position, Entity.Velocity );
 		mover.Trace = mover.Trace.Size( mins, maxs ).Ignore( Entity );
 		mover.MaxStandableAngle = GroundAngle;
 
@@ -994,14 +994,14 @@ public partial class WalkController : MovementComponent
 			maxs = maxs.WithZ( maxs.z - liftFeet );
 		}
 
-		var tr = Trace.Ray( start + TraceOffset, end + TraceOffset )
+		var tr = GatewayTrace.Ray( start + TraceOffset, end + TraceOffset )
 					.Size( mins, maxs )
 					.WithAnyTags( "solid", "playerclip", "passbullets", "player" )
 					.Ignore( Entity )
 					.Run();
 
 		tr.EndPosition -= TraceOffset;
-		return tr;
+		return tr.AsTraceResult();
 	}
 
 	/// <summary>
