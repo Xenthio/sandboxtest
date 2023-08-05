@@ -40,6 +40,7 @@ partial class Player : AnimatedEntity
 		Predictable = true;
 		EnableHitboxes = true;
 
+		Inventory.AddItem( new TraceTest() );
 
 		MoveToSpawnpoint();
 		Event.Run( "Player.PostSpawn", this );
