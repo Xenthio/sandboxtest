@@ -372,6 +372,7 @@ public partial class WalkController : MovementComponent
 		mover.MaxStandableAngle = GroundAngle;
 
 		mover.TryMoveWithStep( Time.Delta, StepSize * Entity.Scale );
+		if ( Entity.Position.Distance( mover.Position ) > 150 ) Entity.ResetInterpolation();
 
 		Entity.Position = mover.Position;
 		Entity.Velocity = mover.Velocity;
@@ -384,6 +385,7 @@ public partial class WalkController : MovementComponent
 		mover.MaxStandableAngle = GroundAngle;
 
 		mover.TryMove( Time.Delta );
+		if ( Entity.Position.Distance( mover.Position ) > 150 ) Entity.ResetInterpolation();
 
 		Entity.Position = mover.Position;
 		Entity.Velocity = mover.Velocity;
