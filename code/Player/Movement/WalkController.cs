@@ -379,8 +379,8 @@ public partial class WalkController : MovementComponent
 
 		Entity.Position = mover.Position;
 		Entity.Velocity = mover.Velocity;
-		DebugOverlay.Line( mover.Position, mover.Position + (mover.Rotation.Forward * 20), Color.Blue, 5, false );
-		DebugOverlay.Line( mover.Position, mover.Position + (mover.Rotation.Up * 20), Color.Green, 5, false );
+		//DebugOverlay.Line( mover.Position, mover.Position + (mover.Rotation.Forward * 20), Color.Blue, 5, false );
+		//DebugOverlay.Line( mover.Position, mover.Position + (mover.Rotation.Up * 20), Color.Green, 5, false );
 		Entity.ViewAngles = mover.Rotation.Angles().WithRoll( 0 );
 	}
 
@@ -396,8 +396,8 @@ public partial class WalkController : MovementComponent
 		Entity.Position = mover.Position;
 		Entity.Velocity = mover.Velocity;
 
-		DebugOverlay.Line( mover.Position, mover.Position + (mover.Rotation.Forward * 20), Color.Blue, 5, false );
-		DebugOverlay.Line( mover.Position, mover.Position + (mover.Rotation.Up * 20), Color.Green, 5, false );
+		//DebugOverlay.Line( mover.Position, mover.Position + (mover.Rotation.Forward * 20), Color.Blue, 5, false );
+		//DebugOverlay.Line( mover.Position, mover.Position + (mover.Rotation.Up * 20), Color.Green, 5, false );
 		Entity.ViewAngles = mover.Rotation.Angles().WithRoll(0);
 	}
 

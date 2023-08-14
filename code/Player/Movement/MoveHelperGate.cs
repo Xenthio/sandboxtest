@@ -110,13 +110,13 @@ public struct MoveHelperGate
 				// Push back by a small margin so this should never happen.
 				Position = pm.EndPosition + pm.Normal * 0.03125f;
 				Rotation = pm.EndRotation;
-				Velocity = pm.Direction * Velocity.Length;
+				Velocity = pm.Direction.Normal * Velocity.Length;
 			}
 			else
 			{
 				Position = pm.EndPosition; 
 				Rotation = pm.EndRotation;
-				Velocity = pm.Direction * Velocity.Length;
+				Velocity = pm.Direction.Normal * Velocity.Length;
 				break;
 			}
 
