@@ -20,6 +20,7 @@ public struct MoveHelperGate
 	//
 	public Vector3 Position;
 	public Vector3 Velocity;
+	public Rotation Rotation;
 	public bool HitWall;
 
 	//
@@ -37,10 +38,11 @@ public struct MoveHelperGate
 	/// <example>
 	/// var move = new MoveHelper( Position, Velocity )
 	/// </example>
-	public MoveHelperGate( Vector3 position, Vector3 velocity, params string[] solidTags ) : this()
+	public MoveHelperGate( Vector3 position, Vector3 velocity, Rotation rotation, params string[] solidTags ) : this()
 	{
 		Velocity = velocity;
 		Position = position;
+		Rotation = rotation;
 		GroundBounce = 0.0f;
 		WallBounce = 0.0f;
 		MaxStandableAngle = 10.0f;
@@ -55,7 +57,7 @@ public struct MoveHelperGate
 	/// <example>
 	/// var move = new MoveHelper( Position, Velocity )
 	/// </example>
-	public MoveHelperGate( Vector3 position, Vector3 velocity ) : this( position, velocity, "solid", "playerclip", "passbullets", "player" )
+	public MoveHelperGate( Vector3 position, Vector3 velocity, Rotation rotation ) : this( position, velocity, rotation, "solid", "playerclip", "passbullets", "player" )
 	{
 
 	}
@@ -65,7 +67,9 @@ public struct MoveHelperGate
 	/// </summary>
 	public GatewayTraceResult TraceFromTo( Vector3 start, Vector3 end )
 	{
-		return Trace.FromTo(start, end).Run(); 
+		var b = Trace.FromTo( start, end );
+		b.StartRotation = Rotation;
+		return b.Run();
 	}
 
 	/// <summary>
@@ -111,6 +115,7 @@ public struct MoveHelperGate
 
 				break;
 			}
+			Rotation = pm.EndRotation;
 
 			moveplanes.StartBump( Velocity );
 
@@ -121,8 +126,10 @@ public struct MoveHelperGate
 
 			timeLeft -= timeLeft * pm.Fraction;
 
+			//Velocity = Velocity.RotateAround( Vector3.Zero, pm.EndRotation );
 			if ( !moveplanes.TryAdd( pm.Normal, ref Velocity, IsFloor( pm ) ? GroundBounce : WallBounce ) )
 				break;
+
 		}
 
 		if ( travelFraction == 0 )
@@ -174,6 +181,7 @@ public struct MoveHelperGate
 	{
 		var tr = TraceFromTo( Position, Position + delta );
 		Position = tr.EndPosition;
+		Rotation = tr.EndRotation;
 		return tr;
 	}
 
@@ -217,6 +225,7 @@ public struct MoveHelperGate
 		// step move moved further, copy its data to us
 		Position = stepMove.Position;
 		Velocity = stepMove.Velocity;
+		Rotation = stepMove.Rotation;
 		HitWall = stepMove.HitWall;
 
 		return stepFraction;

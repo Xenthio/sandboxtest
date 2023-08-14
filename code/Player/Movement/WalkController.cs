@@ -339,6 +339,8 @@ public partial class WalkController : MovementComponent
 				return;
 			}
 
+			StepMove();
+			return;
 			// first try just moving to the destination
 			var dest = (Entity.Position + Entity.Velocity * Time.Delta).WithZ( Entity.Position.z );
 
@@ -367,7 +369,7 @@ public partial class WalkController : MovementComponent
 
 	public virtual void StepMove()
 	{
-		MoveHelperGate mover = new MoveHelperGate( Entity.Position, Entity.Velocity );
+		MoveHelperGate mover = new MoveHelperGate( Entity.Position, Entity.Velocity, Rotation.LookAt( Entity.ViewAngles.Forward, Vector3.Up ) );
 		mover.Trace = mover.Trace.Size( mins, maxs ).Ignore( Entity );
 		mover.MaxStandableAngle = GroundAngle;
 
@@ -376,11 +378,14 @@ public partial class WalkController : MovementComponent
 
 		Entity.Position = mover.Position;
 		Entity.Velocity = mover.Velocity;
+		DebugOverlay.Line( mover.Position, mover.Position + (mover.Rotation.Forward * 10), Color.Blue, 5, false );
+		DebugOverlay.Line( mover.Position, mover.Position + (mover.Rotation.Up * 10), Color.Green, 5, false );
+		Entity.ViewAngles = mover.Rotation.Angles().WithRoll( 0 );
 	}
 
 	public virtual void Move()
 	{
-		MoveHelperGate mover = new MoveHelperGate( Entity.Position, Entity.Velocity );
+		MoveHelperGate mover = new MoveHelperGate( Entity.Position, Entity.Velocity, Rotation.LookAt( Entity.ViewAngles.Forward, Vector3.Up ) );
 		mover.Trace = mover.Trace.Size( mins, maxs ).Ignore( Entity );
 		mover.MaxStandableAngle = GroundAngle;
 
@@ -389,6 +394,10 @@ public partial class WalkController : MovementComponent
 
 		Entity.Position = mover.Position;
 		Entity.Velocity = mover.Velocity;
+
+		DebugOverlay.Line( mover.Position, mover.Position + (mover.Rotation.Forward * 10), Color.Blue, 5, false );
+		DebugOverlay.Line( mover.Position, mover.Position + (mover.Rotation.Up * 10), Color.Green, 5, false );
+		Entity.ViewAngles = mover.Rotation.Angles().WithRoll(0);
 	}
 
 	/// <summary>

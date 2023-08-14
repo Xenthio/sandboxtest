@@ -19,7 +19,7 @@ public class FirstPersonCamera : CameraComponent
 		pl.EyeRotation = pl.ViewAngles.ToRotation();
 
 		Camera.Position = pl.EyePosition;
-		Camera.Rotation = pl.ViewAngles.ToRotation();
+		Camera.Rotation = pl.EyeRotation;
 
 		Camera.Main.SetViewModelCamera( Screen.CreateVerticalFieldOfView( Game.Preferences.FieldOfView ) );
 

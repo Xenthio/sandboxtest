@@ -12,6 +12,7 @@ public class TraceTest : Weapon
 	public override void PrimaryAttack()
 	{
 		var b = GatewayTrace.Ray( Owner.AimRay.Position + (Owner.AimRay.Forward * 50), Owner.AimRay.Position + (Owner.AimRay.Forward*400) );
+		b.StartRotation = Owner.AimRay.Forward.EulerAngles.ToRotation();
 		var tr = b.Run();
 		foreach( var traceresult in tr.Results )
 		{
@@ -19,6 +20,10 @@ public class TraceTest : Weapon
 		}
 
 		DebugOverlay.Line( tr.StartPosition, tr.EndPosition, Color.Red, 5, false );
+		DebugOverlay.Line( tr.StartPosition, tr.StartPosition + (tr.StartRotation.Forward * 10), Color.Blue, 5, false );
+		DebugOverlay.Line( tr.StartPosition, tr.StartPosition + (tr.StartRotation.Up * 10), Color.Green, 5, false );
+		DebugOverlay.Line( tr.EndPosition, tr.EndPosition + (tr.EndRotation.Forward * 10), Color.Blue, 5, false );
+		DebugOverlay.Line( tr.EndPosition, tr.EndPosition + (tr.EndRotation.Up * 10), Color.Green, 5, false );
 	}
 
 	public override void SecondaryAttack()
