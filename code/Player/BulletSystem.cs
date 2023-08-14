@@ -43,10 +43,9 @@ public partial class Bullet
 			{
 				info.IgnoreEntity = trpcheck.Entity;
 			}
-			var tr = Trace.Ray( position, position + (forward * 10000) )
+			var tr = GatewayTrace.Ray( position, position + (forward * 10000) )
 				.UseHitboxes()
-				.Ignore( info.Owner )
-				.Ignore( info.IgnoreEntity )
+				.Ignore( info.Owner ) 
 				.WithAnyTags( "solid", "player", "npc", "penetrable", "corpse", "glass", "water", "carriable", "debris" )
 				.WithoutTags( "trigger", "skybox", "playerclip" )
 				.Run();
@@ -56,7 +55,7 @@ public partial class Bullet
 			DoBulletFlyby( info.Owner, tr.StartPosition, tr.EndPosition, tr.Direction );
 			if ( tr.Hit )
 			{
-				tr.Surface.DoBulletImpact( tr );
+				tr.Surface.DoBulletImpact( tr.AsTraceResult() );
 				var damage = info.Damage;
 
 				if ( tr.Hitbox.HasTag( "head" ) )
@@ -73,7 +72,7 @@ public partial class Bullet
 				tr.Entity.TakeDamage( dmgInfo );
 
 				if ( info.OnDealDamage != null ) info.OnDealDamage( dmgInfo );
-				if ( info.OnBulletHit != null ) info.OnBulletHit( tr );
+				if ( info.OnBulletHit != null ) info.OnBulletHit( tr.AsTraceResult() );
 
 
 				if ( ((tr.Entity.Tags.Has( "penetrable" ) || tr.Entity.Tags.Has( "water" )) || tr.Entity is ShatterGlass || tr.Entity is GlassShard) && level < 16 )
