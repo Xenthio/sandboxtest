@@ -340,7 +340,7 @@ public partial class WalkController : MovementComponent
 			}
 
 			StepMove();
-			return;
+			/*
 			// first try just moving to the destination
 			var dest = (Entity.Position + Entity.Velocity * Time.Delta).WithZ( Entity.Position.z );
 
@@ -354,6 +354,7 @@ public partial class WalkController : MovementComponent
 			}
 
 			StepMove();
+			*/
 		}
 		finally
 		{
@@ -369,7 +370,7 @@ public partial class WalkController : MovementComponent
 
 	public virtual void StepMove()
 	{
-		MoveHelperGate mover = new MoveHelperGate( Entity.Position, Entity.Velocity, Rotation.LookAt( Entity.ViewAngles.Forward, Vector3.Up ) );
+		MoveHelperGate mover = new MoveHelperGate( Entity.Position, Entity.Velocity, Entity.EyeRotation );
 		mover.Trace = mover.Trace.Size( mins, maxs ).Ignore( Entity );
 		mover.MaxStandableAngle = GroundAngle;
 
@@ -378,14 +379,14 @@ public partial class WalkController : MovementComponent
 
 		Entity.Position = mover.Position;
 		Entity.Velocity = mover.Velocity;
-		DebugOverlay.Line( mover.Position, mover.Position + (mover.Rotation.Forward * 10), Color.Blue, 5, false );
-		DebugOverlay.Line( mover.Position, mover.Position + (mover.Rotation.Up * 10), Color.Green, 5, false );
+		DebugOverlay.Line( mover.Position, mover.Position + (mover.Rotation.Forward * 20), Color.Blue, 5, false );
+		DebugOverlay.Line( mover.Position, mover.Position + (mover.Rotation.Up * 20), Color.Green, 5, false );
 		Entity.ViewAngles = mover.Rotation.Angles().WithRoll( 0 );
 	}
 
 	public virtual void Move()
 	{
-		MoveHelperGate mover = new MoveHelperGate( Entity.Position, Entity.Velocity, Rotation.LookAt( Entity.ViewAngles.Forward, Vector3.Up ) );
+		MoveHelperGate mover = new MoveHelperGate( Entity.Position, Entity.Velocity, Entity.EyeRotation );
 		mover.Trace = mover.Trace.Size( mins, maxs ).Ignore( Entity );
 		mover.MaxStandableAngle = GroundAngle;
 
@@ -395,8 +396,8 @@ public partial class WalkController : MovementComponent
 		Entity.Position = mover.Position;
 		Entity.Velocity = mover.Velocity;
 
-		DebugOverlay.Line( mover.Position, mover.Position + (mover.Rotation.Forward * 10), Color.Blue, 5, false );
-		DebugOverlay.Line( mover.Position, mover.Position + (mover.Rotation.Up * 10), Color.Green, 5, false );
+		DebugOverlay.Line( mover.Position, mover.Position + (mover.Rotation.Forward * 20), Color.Blue, 5, false );
+		DebugOverlay.Line( mover.Position, mover.Position + (mover.Rotation.Up * 20), Color.Green, 5, false );
 		Entity.ViewAngles = mover.Rotation.Angles().WithRoll(0);
 	}
 
@@ -997,7 +998,7 @@ public partial class WalkController : MovementComponent
 	/// position. This is good when tracing down because you won't be tracing through the ceiling above.
 	/// </summary>
 	public virtual TraceResult TraceBBox( Vector3 start, Vector3 end, Vector3 mins, Vector3 maxs, float liftFeet = 0.0f )
-	{
+	{ 
 		if ( liftFeet > 0 )
 		{
 			liftFeet *= Entity.Scale;
@@ -1005,11 +1006,12 @@ public partial class WalkController : MovementComponent
 			maxs = maxs.WithZ( maxs.z - liftFeet );
 		}
 
-		var tr = GatewayTrace.Ray( start + TraceOffset, end + TraceOffset )
+		var ptr = GatewayTrace.Ray( start + TraceOffset, end + TraceOffset )
 					.Size( mins, maxs )
 					.WithAnyTags( "solid", "playerclip", "passbullets", "player" )
-					.Ignore( Entity )
-					.Run();
+					.Ignore( Entity );
+		ptr.StartRotation = Entity.EyeRotation;
+		var tr = ptr.Run();
 
 		tr.EndPosition -= TraceOffset;
 		return tr.AsTraceResult();

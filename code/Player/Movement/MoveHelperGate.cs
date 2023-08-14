@@ -48,6 +48,8 @@ public struct MoveHelperGate
 		MaxStandableAngle = 10.0f;
 
 		Trace = GatewayTrace.Ray( 0, 0 ).WithAnyTags( solidTags );
+
+		Trace.StartRotation = rotation;
 	}
 
 	/// <summary>
@@ -68,7 +70,6 @@ public struct MoveHelperGate
 	public GatewayTraceResult TraceFromTo( Vector3 start, Vector3 end )
 	{
 		var b = Trace.FromTo( start, end );
-		b.StartRotation = Rotation;
 		return b.Run();
 	}
 
@@ -108,14 +109,14 @@ public struct MoveHelperGate
 				// There's a bug with sweeping where sometimes the end position is starting in solid, so we get stuck.
 				// Push back by a small margin so this should never happen.
 				Position = pm.EndPosition + pm.Normal * 0.03125f;
+				Rotation = pm.EndRotation;
 			}
 			else
 			{
-				Position = pm.EndPosition;
-
+				Position = pm.EndPosition; 
+				Rotation = pm.EndRotation;
 				break;
 			}
-			Rotation = pm.EndRotation;
 
 			moveplanes.StartBump( Velocity );
 
@@ -181,7 +182,6 @@ public struct MoveHelperGate
 	{
 		var tr = TraceFromTo( Position, Position + delta );
 		Position = tr.EndPosition;
-		Rotation = tr.EndRotation;
 		return tr;
 	}
 
